@@ -3,7 +3,6 @@
 Stopwatch::Stopwatch()
 {
     //ctor
-    // PEA 3
     // Jan Potocki 2018
 }
 
@@ -13,10 +12,10 @@ void Stopwatch::start()
     measurement = 0;
 }
 
-void Stopwatch::stop()
+void Stopwatch::check()
 {
     tstop = clock();
-    measurement = ((double)(tstop - tstart))/CLOCKS_PER_SEC;
+    measurement = 10 * ((double)(tstop - tstart)) / CLOCKS_PER_SEC;
 }
 
 double Stopwatch::read()

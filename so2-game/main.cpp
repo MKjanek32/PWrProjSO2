@@ -7,10 +7,14 @@
 #include <ncurses.h>
 #include <unistd.h>
 #include "Brick.h"
+#include "Platform.h"
+#include "Stopwatch.h"
 
+int xMax, yMax;
 bool running = true, climate = false;
 std::vector<Brick> bricks;
-
+Platform platform;
+Stopwatch gameClock;
 
 // "Monitor" function
 void refreshScreen()
@@ -25,16 +29,23 @@ void refreshScreen()
             if(climate)
                 {
                     attron(COLOR_PAIR(bricks[i].getColor()));
-                    mvprintw(bricks[i].getyPosition(), bricks[i].getxPosition(), "*" );
+                    mvprintw(bricks[i].getyPosition(), bricks[i].getxPosition(), "*");
                     attroff(COLOR_PAIR(bricks[i].getColor()));
                 }
             else
                 {
                     attron(COLOR_PAIR(bricks[i].getColor()));
-                    mvprintw(bricks[i].getyPosition(), bricks[i].getxPosition(), "#" );
+                    mvprintw(bricks[i].getyPosition(), bricks[i].getxPosition(), "#");
                     attroff(COLOR_PAIR(bricks[i].getColor()));
                 }
         }
+
+        attron(COLOR_PAIR(platform.getColor()));
+        mvprintw(yMax - 2, platform.getPosition(), platform.getSprite());
+        attroff(COLOR_PAIR(platform.getColor()));
+
+        gameClock.check();
+        mvprintw(yMax - 1, 0, "%f", gameClock.read());
 
         refresh();
 
@@ -45,8 +56,9 @@ void refreshScreen()
 
 int main(int argc, char *argv[])
 {
-    int xMax, yMax, fallingBricks = 0;
+    int fallingBricks = 0;
     std::vector<std::thread> brickThreads;
+    //Stopwatch clock;
 
     srand(time(0));
 
@@ -66,6 +78,7 @@ int main(int argc, char *argv[])
     curs_set(0);
     getmaxyx(stdscr, yMax, xMax);
 
+    // Initialize colors
     start_color();
     init_pair(1, COLOR_RED, COLOR_BLACK);
     init_pair(2, COLOR_GREEN, COLOR_BLACK);
@@ -74,21 +87,32 @@ int main(int argc, char *argv[])
     init_pair(5, COLOR_MAGENTA, COLOR_BLACK);
     init_pair(6, COLOR_CYAN, COLOR_BLACK);
 
+    // Non-blocking input for platform-movement
+    //timeout(0);
+
     // Initialize scene
     Brick::initScene(xMax, yMax);
+    Platform::initScene(xMax);
 
     // Initialize all bricks...
     for(int i = 0; i < xMax; i++)
     {
-        // ...with random descent rate in range 0 (slow) to 20 (fast)
-        Brick brick(i, rand() % 21);
+        // ...with random descent rate in range 0 (slow) to 15 (fast)
+        Brick brick(i, rand() % 16);
         bricks.push_back(brick);
     }
 
     // Start monitor
     std::thread monitor(refreshScreen);
 
-    while(fallingBricks < xMax)
+    // Start platform treads
+    std::thread platformMover(platform.moveKeyThread());
+    std::thread platformColorChanger(platform.colorChangeThread());
+
+    // Start game
+    gameClock.start();
+
+    while(gameClock.read() < 10)
     {
         // Determine random brick...
         int randBrick = rand() % xMax;
@@ -102,9 +126,11 @@ int main(int argc, char *argv[])
         brickThreads.push_back(bricks.at(randBrick).fallThread());
         fallingBricks++;
 
-        // Random time in range 1500 to 3000 ms until next fall
-        unsigned randTime = rand() % 15 + 15;
+        // Random time in range 1000 to 2000 ms until next fall
+        unsigned randTime = rand() % 10 + 10;
         usleep(100000 * randTime);
+
+        //gameClock.check();
     }
 
     // Wait for all bricks
@@ -112,6 +138,11 @@ int main(int argc, char *argv[])
     {
         brickThreads.at(i).join();
     }
+
+    // Stop platform threads
+    platform.terminateThreads();
+    platformMover.join();
+    platformColorChanger.join();
 
     // Stop monitor
     sleep(1);

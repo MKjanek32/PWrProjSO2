@@ -8,7 +8,7 @@ Brick::Brick(int xPosition, int descentRate)
 {
     //ctor
     this->xPosition = xPosition;
-    this->yPosition = 0;
+    this->yPosition = -1;
     this->descentRate = descentRate;
     this->falling = false;
 
@@ -59,6 +59,11 @@ void Brick::fall()
             yPosition++;
             usleep(250000 - 10000 * descentRate);
         }
+
+        // Reset
+        yPosition = -1;
+        falling = false;
+        randomColor();
     }
     else
     {

@@ -4,13 +4,13 @@
 #include <ctime>
 
 // Klasa do pomiaru czasu (wieloplatformowa)
-// Jan Potocki 2017
+// Jan Potocki 2018
 class Stopwatch
 {
     public:
         Stopwatch();
         void start();
-        void stop();
+        void check();
         double read();
         double measurement;
     protected:
