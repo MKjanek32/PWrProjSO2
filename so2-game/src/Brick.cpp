@@ -11,6 +11,8 @@ Brick::Brick(int xPosition, int descentRate)
     this->yPosition = 0;
     this->descentRate = descentRate;
     this->falling = false;
+
+    randomColor();
 }
 
 Brick::~Brick()
@@ -34,6 +36,12 @@ int Brick::getyPosition()
 {
     return yPosition;
 }
+
+int Brick::getColor()
+{
+    return color;
+}
+
 
 bool Brick::isFalling()
 {
@@ -61,4 +69,9 @@ void Brick::fall()
 std::thread Brick::fallThread()
 {
     return std::thread(&Brick::fall, this);
+}
+
+void Brick::randomColor()
+{
+    color = rand() % 6 + 1;
 }

@@ -24,11 +24,15 @@ void refreshScreen()
             // Easter egg (1)
             if(climate)
                 {
-                mvprintw(bricks[i].getyPosition(), bricks[i].getxPosition(), "*" );
+                    attron(COLOR_PAIR(bricks[i].getColor()));
+                    mvprintw(bricks[i].getyPosition(), bricks[i].getxPosition(), "*" );
+                    attroff(COLOR_PAIR(bricks[i].getColor()));
                 }
             else
                 {
-                mvprintw(bricks[i].getyPosition(), bricks[i].getxPosition(), "#" );
+                    attron(COLOR_PAIR(bricks[i].getColor()));
+                    mvprintw(bricks[i].getyPosition(), bricks[i].getxPosition(), "#" );
+                    attroff(COLOR_PAIR(bricks[i].getColor()));
                 }
         }
 
@@ -62,6 +66,14 @@ int main(int argc, char *argv[])
     curs_set(0);
     getmaxyx(stdscr, yMax, xMax);
 
+    start_color();
+    init_pair(1, COLOR_RED, COLOR_BLACK);
+    init_pair(2, COLOR_GREEN, COLOR_BLACK);
+    init_pair(3, COLOR_YELLOW, COLOR_BLACK);
+    init_pair(4, COLOR_BLUE, COLOR_BLACK);
+    init_pair(5, COLOR_MAGENTA, COLOR_BLACK);
+    init_pair(6, COLOR_CYAN, COLOR_BLACK);
+
     // Initialize scene
     Brick::initScene(xMax, yMax);
 
@@ -90,8 +102,8 @@ int main(int argc, char *argv[])
         brickThreads.push_back(bricks.at(randBrick).fallThread());
         fallingBricks++;
 
-        // Random time in range 100 to 500 ms until next fall
-        unsigned randTime = rand() % 5 + 1;
+        // Random time in range 1500 to 3000 ms until next fall
+        unsigned randTime = rand() % 15 + 15;
         usleep(100000 * randTime);
     }
 
