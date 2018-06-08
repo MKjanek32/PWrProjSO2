@@ -8,17 +8,33 @@ Stopwatch::Stopwatch()
 
 void Stopwatch::start()
 {
-    tstart = clock();
-    measurement = 0;
+    running = true;
+    miliseconds = 0;
+    measureThread = std::thread(&Stopwatch::measure, this);
 }
 
-void Stopwatch::check()
+void Stopwatch::stop()
 {
-    tstop = clock();
-    measurement = 10 * ((double)(tstop - tstart)) / CLOCKS_PER_SEC;
+    running = false;
+    measureThread.join();
 }
 
-double Stopwatch::read()
+bool Stopwatch::isRunning()
 {
+    return running;
+}
+
+float Stopwatch::read()
+{
+    float measurement = (float)miliseconds / 1000;
     return measurement;
+}
+
+void Stopwatch::measure()
+{
+    while(running)
+    {
+        usleep(1000);
+        miliseconds++;
+    }
 }

@@ -1,22 +1,25 @@
 #ifndef STOPWATCH_H
 #define STOPWATCH_H
 
-#include <ctime>
+#include <thread>
+#include <unistd.h>
 
-// Klasa do pomiaru czasu (wieloplatformowa)
+// Klasa do pomiaru czasu w oparciu o funkcje systemowe
 // Jan Potocki 2018
 class Stopwatch
 {
     public:
         Stopwatch();
         void start();
-        void check();
-        double read();
-        double measurement;
+        void stop();
+        bool isRunning();
+        float read();
     protected:
     private:
-        clock_t tstart;
-        clock_t tstop;
+        unsigned long long int miliseconds;
+        bool running;
+        std::thread measureThread;
+        void measure();
 };
 
 #endif // STOPWATCH_H

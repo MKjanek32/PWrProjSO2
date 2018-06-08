@@ -44,8 +44,7 @@ void refreshScreen()
         mvprintw(yMax - 2, platform.getPosition(), platform.getSprite());
         attroff(COLOR_PAIR(platform.getColor()));
 
-        gameClock.check();
-        mvprintw(yMax - 1, 0, "%f", gameClock.read());
+        mvprintw(yMax - 1, 0, "%.3f", gameClock.read());
 
         refresh();
 
@@ -129,8 +128,6 @@ int main(int argc, char *argv[])
         // Random time in range 1000 to 2000 ms until next fall
         unsigned randTime = rand() % 10 + 10;
         usleep(100000 * randTime);
-
-        //gameClock.check();
     }
 
     // Wait for all bricks
@@ -148,6 +145,9 @@ int main(int argc, char *argv[])
     sleep(1);
     running = false;
     monitor.join();
+
+    // Stop clock
+    gameClock.stop();
 
     // Close ncurses
     endwin();
