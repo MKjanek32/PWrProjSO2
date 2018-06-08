@@ -41,9 +41,11 @@
 			<Add option="-fexceptions" />
 		</Compiler>
 		<Unit filename="include/Brick.h" />
+		<Unit filename="include/Platform.h" />
 		<Unit filename="include/Stopwatch.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="src/Brick.cpp" />
+		<Unit filename="src/Platform.cpp" />
 		<Unit filename="src/Stopwatch.cpp" />
 		<Extensions>
 			<code_completion />
