@@ -76,7 +76,11 @@ void Brick::fall()
                 }
                 else
                 {
-                    points--;
+                    if(points != 0)
+                    {
+                        points--;
+                    }
+
                     //tutaj dopisac zamrazanie
                 }
             }
