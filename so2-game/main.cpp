@@ -45,6 +45,7 @@ void refreshScreen()
         attroff(COLOR_PAIR(platform.getColor()));
 
         mvprintw(yMax - 1, 0, "%.3f", gameClock.read());
+        mvprintw(yMax - 1, xMax - 3, "%.3d", Brick::getPoints());
 
         refresh();
 
@@ -90,7 +91,7 @@ int main(int argc, char *argv[])
     //timeout(0);
 
     // Initialize scene
-    Brick::initScene(xMax, yMax);
+    Brick::initScene(xMax, yMax, &platform);
     Platform::initScene(xMax);
 
     // Initialize all bricks...
@@ -111,7 +112,7 @@ int main(int argc, char *argv[])
     // Start game
     gameClock.start();
 
-    while(gameClock.read() < 10)
+    while(gameClock.read() < 60)
     {
         // Determine random brick...
         int randBrick = rand() % xMax;
