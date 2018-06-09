@@ -4,6 +4,8 @@
 #include <cstdlib>
 #include <ctime>
 #include <iostream>
+#include <condition_variable>
+#include <mutex>
 #include <thread>
 #include <unistd.h>
 #include "Platform.h"
@@ -22,10 +24,13 @@ class Brick
         std::thread fallThread();
     protected:
     private:
-        static bool initialized;
         static int xMax;
         static int yMax;
         static int points;
+        static bool initialized;
+        static bool freezed;
+        static std::mutex freezeMutex;
+        static std::condition_variable freezeCondition;
         static Platform *platform;
         int xPosition;
         int yPosition;
@@ -34,6 +39,7 @@ class Brick
         bool falling;
         void fall();
         void randomColor();
+        static void freeze();
 };
 
 #endif // BRICK_H

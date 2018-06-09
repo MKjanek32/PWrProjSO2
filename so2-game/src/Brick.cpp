@@ -1,9 +1,12 @@
 #include "Brick.h"
 
-bool Brick::initialized = false;
 int Brick::xMax;
 int Brick::yMax;
 int Brick::points = 0;
+bool Brick::initialized = false;
+bool Brick::freezed = false;
+std::mutex Brick::freezeMutex;
+std::condition_variable Brick::freezeCondition;
 Platform *Brick::platform;
 
 Brick::Brick(int xPosition, int descentRate)
@@ -64,6 +67,17 @@ void Brick::fall()
 
         while(falling & yPosition < yMax - 2)
         {
+            // Freeze game
+            if(freezed)
+            {
+                std::unique_lock<std::mutex> freezeLock(freezeMutex);
+
+                while(freezed)
+                {
+                    freezeCondition.wait(freezeLock);
+                }
+            }
+
             yPosition++;
 
             if(yPosition == yMax - 2 && platform->getPosition() <= xPosition && platform->getEnd() >= xPosition)
@@ -81,6 +95,7 @@ void Brick::fall()
                         points--;
                     }
 
+                    Brick::freeze();
                     //tutaj dopisac zamrazanie
                 }
             }
@@ -107,4 +122,13 @@ std::thread Brick::fallThread()
 void Brick::randomColor()
 {
     color = rand() % 6 + 1;
+}
+
+void Brick::freeze()
+{
+    std::unique_lock<std::mutex> freezeLock(freezeMutex);
+    freezed = true;
+    sleep(10);
+    freezed = false;
+    freezeCondition.notify_all();
 }
