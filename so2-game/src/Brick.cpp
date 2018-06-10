@@ -21,14 +21,6 @@ Brick::~Brick()
     //dtor
 }
 
-//void Brick::initScene(int xRes, int yRes, Platform *newPlatform)
-//{
-//    xMax = xRes;
-//    yMax = yRes;
-//    platform = newPlatform;
-//    initialized = true;
-//}
-
 void Brick::setPlatform(Platform *newPlatform)
 {
     platform = newPlatform;
@@ -123,12 +115,3 @@ void Brick::randomColor()
 {
     color = rand() % 6 + 1;
 }
-
-//void Brick::freeze()
-//{
-//    std::unique_lock<std::mutex> freezeLock(freezeMutex);
-//    freezed = true;
-//    sleep(10);
-//    freezed = false;
-//    freezeCondition.notify_all();
-//}
