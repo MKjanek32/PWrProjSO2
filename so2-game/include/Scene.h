@@ -8,6 +8,7 @@
 class Scene
 {
     public:
+        static std::mutex ncursesMutex;
         static std::mutex freezeMutex;
         static std::condition_variable freezeCondition;
         Scene();

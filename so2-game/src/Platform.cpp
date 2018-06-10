@@ -56,6 +56,10 @@ void Platform::moveKey()
 
     while(running)
     {
+        ncursesMutex.lock();
+        key = getch();
+        ncursesMutex.unlock();
+
         // Freeze game
         if(freezed)
         {
@@ -65,9 +69,10 @@ void Platform::moveKey()
             {
                 freezeCondition.wait(freezeLock);
             }
-        }
 
-        key = getch();
+            // Ignore keys pressed when frozen
+            flushinp();
+        }
 
         switch(key)
         {

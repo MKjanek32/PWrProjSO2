@@ -6,6 +6,7 @@ int Scene::yMax;
 int Scene::points = 0;
 bool Scene::initialized = false;
 bool Scene::freezed = false;
+std::mutex Scene::ncursesMutex;
 std::mutex Scene::freezeMutex;
 std::condition_variable Scene::freezeCondition;
 

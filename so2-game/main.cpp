@@ -21,6 +21,7 @@ void refreshScreen()
 {
     while(running == true)
     {
+        Scene::ncursesMutex.lock();
         clear();
 
         for(int i = 0; i < bricks.size(); i++)
@@ -48,6 +49,7 @@ void refreshScreen()
         mvprintw(yMax - 1, xMax - 3, "%.3d", Scene::getPoints());
 
         refresh();
+        Scene::ncursesMutex.unlock();
 
         // Refresh every 0.01 s
         usleep(10000);
@@ -88,7 +90,7 @@ int main(int argc, char *argv[])
     init_pair(6, COLOR_CYAN, COLOR_BLACK);
 
     // Non-blocking input for platform-movement
-    //timeout(0);
+    timeout(0);
 
     // Initialize scene
     Scene::init(xMax, yMax);
