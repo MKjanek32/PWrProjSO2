@@ -56,6 +56,17 @@ void Platform::moveKey()
 
     while(running)
     {
+        // Freeze game
+        if(freezed)
+        {
+            std::unique_lock<std::mutex> freezeLock(freezeMutex);
+
+            while(freezed)
+            {
+                freezeCondition.wait(freezeLock);
+            }
+        }
+
         key = getch();
 
         switch(key)
@@ -86,6 +97,17 @@ void Platform::colorChange()
 
     while(running)
     {
+        // Freeze game
+        if(freezed)
+        {
+            std::unique_lock<std::mutex> freezeLock(freezeMutex);
+
+            while(freezed)
+            {
+                freezeCondition.wait(freezeLock);
+            }
+        }
+
         color = rand() % 6 + 1;
         sleep(15);
     }
