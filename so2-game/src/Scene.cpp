@@ -31,6 +31,11 @@ int Scene::getPoints()
     return points;
 }
 
+bool Scene::isFreezed()
+{
+    return freezed;
+}
+
 void Scene::freeze()
 {
     std::unique_lock<std::mutex> freezeLock(freezeMutex);

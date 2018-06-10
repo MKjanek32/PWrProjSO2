@@ -114,6 +114,17 @@ int main(int argc, char *argv[])
 
     while(gameClock.read() < 60)
     {
+        // Freeze game
+        if(Scene::isFreezed() == true)
+        {
+            std::unique_lock<std::mutex> freezeLock(Scene::freezeMutex);
+
+            while(Scene::isFreezed() == true)
+            {
+                Scene::freezeCondition.wait(freezeLock);
+            }
+        }
+
         // Determine random brick...
         int randBrick = rand() % xMax;
         while(bricks.at(randBrick).isFalling())
@@ -126,21 +137,21 @@ int main(int argc, char *argv[])
         brickThreads.push_back(bricks.at(randBrick).fallThread());
         fallingBricks++;
 
-        // Random time in range 1000 to 2000 ms until next fall
-        unsigned randTime = rand() % 10 + 10;
+        // Random time in range 400 to 800 ms until next fall
+        unsigned randTime = rand() % 4 + 4;
         usleep(100000 * randTime);
-    }
-
-    // Wait for all bricks
-    for(int i = 0; i < brickThreads.size(); i++)
-    {
-        brickThreads.at(i).join();
     }
 
     // Stop platform threads
     platform.terminateThreads();
     platformMover.join();
     platformColorChanger.join();
+
+    // Wait for all bricks
+    for(int i = 0; i < brickThreads.size(); i++)
+    {
+        brickThreads.at(i).join();
+    }
 
     // Stop monitor
     sleep(1);
