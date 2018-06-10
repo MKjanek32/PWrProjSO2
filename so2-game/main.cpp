@@ -45,7 +45,7 @@ void refreshScreen()
         attroff(COLOR_PAIR(platform.getColor()));
 
         mvprintw(yMax - 1, 0, "%.3f", gameClock.read());
-        mvprintw(yMax - 1, xMax - 3, "%.3d", Brick::getPoints());
+        mvprintw(yMax - 1, xMax - 3, "%.3d", Scene::getPoints());
 
         refresh();
 
@@ -91,8 +91,8 @@ int main(int argc, char *argv[])
     //timeout(0);
 
     // Initialize scene
-    Brick::initScene(xMax, yMax, &platform);
-    Platform::initScene(xMax);
+    Scene::init(xMax, yMax);
+    Brick::setPlatform(&platform);
 
     // Initialize all bricks...
     for(int i = 0; i < xMax; i++)

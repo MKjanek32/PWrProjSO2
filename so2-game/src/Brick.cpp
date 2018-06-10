@@ -1,13 +1,9 @@
 #include "Brick.h"
+#include <cstdlib>
+#include <iostream>
+#include <unistd.h>
 
-int Brick::xMax;
-int Brick::yMax;
-int Brick::points = 0;
-bool Brick::initialized = false;
-bool Brick::freezed = false;
-std::mutex Brick::freezeMutex;
-std::condition_variable Brick::freezeCondition;
-Platform *Brick::platform;
+Platform *Brick::platform = 0;
 
 Brick::Brick(int xPosition, int descentRate)
 {
@@ -25,17 +21,17 @@ Brick::~Brick()
     //dtor
 }
 
-void Brick::initScene(int xRes, int yRes, Platform *newPlatform)
-{
-    xMax = xRes;
-    yMax = yRes;
-    platform = newPlatform;
-    initialized = true;
-}
+//void Brick::initScene(int xRes, int yRes, Platform *newPlatform)
+//{
+//    xMax = xRes;
+//    yMax = yRes;
+//    platform = newPlatform;
+//    initialized = true;
+//}
 
-int Brick::getPoints()
+void Brick::setPlatform(Platform *newPlatform)
 {
-    return points;
+    platform = newPlatform;
 }
 
 int Brick::getxPosition()
@@ -61,57 +57,61 @@ bool Brick::isFalling()
 
 void Brick::fall()
 {
-    if(initialized)
-    {
-        falling = true;
-
-        while(falling & yPosition < yMax - 2)
-        {
-            // Freeze game
-            if(freezed)
-            {
-                std::unique_lock<std::mutex> freezeLock(freezeMutex);
-
-                while(freezed)
-                {
-                    freezeCondition.wait(freezeLock);
-                }
-            }
-
-            yPosition++;
-
-            if(yPosition == yMax - 2 && platform->getPosition() <= xPosition && platform->getEnd() >= xPosition)
-            {
-                falling = false;
-
-                if(platform->getColor() == color)
-                {
-                    points += 5;
-                }
-                else
-                {
-                    if(points != 0)
-                    {
-                        points--;
-                    }
-
-                    Brick::freeze();
-                    //tutaj dopisac zamrazanie
-                }
-            }
-
-            usleep(250000 - 10000 * descentRate);
-        }
-
-        // Reset
-        yPosition = -1;
-        falling = false;
-        randomColor();
-    }
-    else
+    if(!initialized)
     {
         std::cout << "Scene size not initialized!" << std::endl;
+        return;
     }
+
+    if(platform == 0)
+    {
+        std::cout << "Platform not set!" << std::endl;
+        return;
+    }
+
+    falling = true;
+
+    while(falling & yPosition < yMax - 2)
+    {
+        // Freeze game
+        if(freezed)
+        {
+            std::unique_lock<std::mutex> freezeLock(freezeMutex);
+
+            while(freezed)
+            {
+                freezeCondition.wait(freezeLock);
+            }
+        }
+
+        yPosition++;
+
+        if(yPosition == yMax - 2 && platform->getPosition() <= xPosition && platform->getEnd() >= xPosition)
+        {
+            falling = false;
+
+            if(platform->getColor() == color)
+            {
+                points += 5;
+            }
+            else
+            {
+                if(points != 0)
+                {
+                    points--;
+                }
+
+                Brick::freeze();
+            }
+        }
+
+        usleep(250000 - 10000 * descentRate);
+    }
+
+    // Reset
+    yPosition = -1;
+    falling = false;
+    randomColor();
 }
 
 std::thread Brick::fallThread()
@@ -124,11 +124,11 @@ void Brick::randomColor()
     color = rand() % 6 + 1;
 }
 
-void Brick::freeze()
-{
-    std::unique_lock<std::mutex> freezeLock(freezeMutex);
-    freezed = true;
-    sleep(10);
-    freezed = false;
-    freezeCondition.notify_all();
-}
+//void Brick::freeze()
+//{
+//    std::unique_lock<std::mutex> freezeLock(freezeMutex);
+//    freezed = true;
+//    sleep(10);
+//    freezed = false;
+//    freezeCondition.notify_all();
+//}

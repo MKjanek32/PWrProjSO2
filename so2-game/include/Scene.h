@@ -10,17 +10,18 @@ class Scene
     public:
         Scene();
         virtual ~Scene();
-
-        //static int GetyMax() { return yMax; }
-        //void SetyMax(static int val) { yMax = val; }
+        static void init(int xRes, int yRes);
+        static int getPoints();
     protected:
-    private:
+        static int xMax;
+        static int yMax;
+        static int points;
         static bool initialized;
         static bool freezed;
         static std::mutex freezeMutex;
         static std::condition_variable freezeCondition;
-        static int xMax;
-        static int yMax;
+        static void freeze();
+    private:
 };
 
 #endif // SCENE_H

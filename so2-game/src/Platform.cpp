@@ -1,7 +1,7 @@
 #include "Platform.h"
-
-bool Platform::initialized = false;
-int Platform::posMax;
+#include <iostream>
+#include <ncurses.h>
+#include <unistd.h>
 
 Platform::Platform()
 {
@@ -14,12 +14,6 @@ Platform::Platform()
 Platform::~Platform()
 {
     //dtor
-}
-
-void Platform::initScene(int xRes)
-{
-    posMax = xRes;
-    initialized = true;
 }
 
 const char *Platform::getSprite()
@@ -50,6 +44,12 @@ void Platform::terminateThreads()
 
 void Platform::moveKey()
 {
+    if(!initialized)
+    {
+        std::cout << "Scene size not initialized!" << std::endl;
+        return;
+    }
+
     int key;
 
     running = true;
@@ -67,7 +67,7 @@ void Platform::moveKey()
             }
             break;
         case 'd':
-            if(position < posMax - sprite.length())
+            if(position < xMax - sprite.length())
             {
                 position++;
             }

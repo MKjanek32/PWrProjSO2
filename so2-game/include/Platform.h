@@ -3,15 +3,13 @@
 
 #include <string>
 #include <thread>
-#include <ncurses.h>
-#include <unistd.h>
+#include "Scene.h"
 
-class Platform
+class Platform : public Scene
 {
     public:
         Platform();
         ~Platform();
-        static void initScene(int xRes);
         const char *getSprite();
         int getPosition();
         int getEnd();
@@ -21,8 +19,6 @@ class Platform
         std::thread colorChangeThread();
     protected:
     private:
-        static bool initialized;
-        static int posMax;
         std::string sprite;
         int position;
         int points;
