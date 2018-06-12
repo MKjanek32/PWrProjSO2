@@ -1,0 +1,23 @@
+# depslib dependency file v1.0
+1524609757 source:/home/janek/Projekty/Studia/so2-center/main.cpp
+	<cstdlib>
+	<ctime>
+	<iostream>
+	<mutex>
+	<string>
+	<thread>
+	<vector>
+	<ncurses.h>
+	<unistd.h>
+	"Entry.h"
+
+1524608267 /home/janek/Projekty/Studia/so2-center/include/Entry.h
+	<string>
+	<thread>
+	<unistd.h>
+
+1524608938 source:/home/janek/Projekty/Studia/so2-center/src/Entry.cpp
+	<iostream>
+	<mutex>
+	"Entry.h"
+
