@@ -61,9 +61,7 @@ void refreshScreen()
 
 int main(int argc, char *argv[])
 {
-    int fallingBricks = 0;
     std::vector<std::thread> brickThreads;
-    //Stopwatch clock;
 
     srand(time(0));
 
@@ -141,7 +139,6 @@ int main(int argc, char *argv[])
 
         // ...and launch it with nuclear-powered hammer ;-)
         brickThreads.push_back(bricks.at(randBrick).fallThread());
-        fallingBricks++;
 
         // Random time in range 400 to 800 ms until next fall
         unsigned randTime = rand() % 4 + 4;
@@ -179,7 +176,7 @@ int main(int argc, char *argv[])
 
     std::cout << std::endl;
 
-    std::cout << "BRIcks-ng Caban Kernel-thread System Next Generation v1.1" << std::endl;
+    std::cout << "BRIcks-ng Caban Kernel-thread System Next Generation v1.0" << std::endl;
     std::cout << "Jan Potocki 2018" << std::endl;
     std::cout << "(beerware)" << std::endl;
     std::cout << std::endl;
@@ -188,11 +185,11 @@ int main(int argc, char *argv[])
     std::cout << "But now they use the repo tools," << std::endl;
     std::cout << "In the same open access way..." << '"' << std::endl;
     std::cout << "(and recently acquired GitHub)" << std::endl;
+    std::cout << std::endl;
 
     // Easter egg (3)
     if(climate)
     {
-        std::cout << std::endl;
         std::cout << "SEVERE WEATHER ALERT: major snowfall predicted in 48h forecast for Lower Silesia, south-western Poland" << std::endl;
         std::cout << "Global warming affecting again!... ;-)" << std::endl;
     }
