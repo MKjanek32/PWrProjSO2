@@ -41,14 +41,31 @@ bool Scene::isFreezed()
 
 void Scene::freeze()
 {
+    const int idleSeconds = 10;
+
     std::unique_lock<std::mutex> freezeLock(freezeMutex);
     freezed = true;
-    sleep(10);
+    sleep(idleSeconds);
+
+//    // This must be interruptable, so it can't be just sleep(idleSeconds)
+//    for(int i = 0; i < idleSeconds * 10; i++)
+//    {
+//        if(running)
+//        {
+//            // Every tick = 100 ms
+//            usleep(100000);
+//        }
+//        else
+//        {
+//            break;
+//        }
+//    }
+
     freezed = false;
     freezeCondition.notify_all();
 }
 
 void Scene::terminateAll()
 {
-    running = false;
+    Scene::running = false;
 }

@@ -10,8 +10,11 @@
 #include "Platform.h"
 #include "Stopwatch.h"
 
+const int gameTime = 120;
+
 int xMax, yMax;
-bool running = true, climate = false;
+bool refreshing = false;
+bool climate = false;
 std::vector<Brick> bricks;
 Platform platform;
 Stopwatch gameClock;
@@ -19,7 +22,7 @@ Stopwatch gameClock;
 // "Monitor" function
 void refreshScreen()
 {
-    while(running == true)
+    while(refreshing == true)
     {
         Scene::ncursesMutex.lock();
         clear();
@@ -105,6 +108,7 @@ int main(int argc, char *argv[])
     }
 
     // Start monitor
+    refreshing = true;
     std::thread monitor(refreshScreen);
 
     // Start platform treads
@@ -114,7 +118,7 @@ int main(int argc, char *argv[])
     // Start game
     gameClock.start();
 
-    while(gameClock.read() < 60)
+    while(gameClock.read() < gameTime)
     {
         // Freeze game
         if(Scene::isFreezed() == true)
@@ -144,36 +148,46 @@ int main(int argc, char *argv[])
         usleep(100000 * randTime);
     }
 
+    // Stop clock
+    gameClock.stop();
+
     // Stop scene objects threads
     Scene::terminateAll();
+
     platformMover.join();
     platformColorChanger.join();
 
-    // Wait for all bricks
     for(int i = 0; i < brickThreads.size(); i++)
     {
         brickThreads.at(i).join();
     }
 
     // Stop monitor
-    sleep(1);
-    running = false;
+    refreshing = false;
     monitor.join();
-
-    // Stop clock
-    gameClock.stop();
+    sleep(1);
 
     // Close ncurses
     endwin();
 
-    std::cout << "BRIcks Caban Kernel-thread System v1.1" << std::endl;
+    std::cout << "Your score: " << Scene::getPoints() << " points" << std::endl;
+
+    if(Scene::getPoints() != 0)
+    {
+        std::cout << "Congratulations!" << std::endl;
+    }
+
+    std::cout << std::endl;
+
+    std::cout << "BRIcks-ng Caban Kernel-thread System Next Generation v1.1" << std::endl;
     std::cout << "Jan Potocki 2018" << std::endl;
     std::cout << "(beerware)" << std::endl;
     std::cout << std::endl;
-    std::cout << '"' << "I had a Type-4 keyboard," << std::endl;
-    std::cout << "Bought with my Sun workstation," << std::endl;
-    std::cout << "Hacked on it 'til my fingers bled." << std::endl;
-    std::cout << "Was the winter of '95..." << '"' << std::endl;
+    std::cout << '"' << "...Back around that Halloween," << std::endl;
+    std::cout << "Microsoft said open source would never last," << std::endl;
+    std::cout << "But now they use the repo tools," << std::endl;
+    std::cout << "In the same open access way..." << '"' << std::endl;
+    std::cout << "(and recently acquired GitHub)" << std::endl;
 
     // Easter egg (3)
     if(climate)

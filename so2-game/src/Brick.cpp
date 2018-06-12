@@ -63,7 +63,7 @@ void Brick::fall()
 
     falling = true;
 
-    while(falling & yPosition < yMax - 2)
+    while(running & falling & yPosition < yMax - 2)
     {
         // Freeze game
         if(freezed)
@@ -76,36 +76,43 @@ void Brick::fall()
             }
         }
 
-        yPosition++;
-
-        if(yPosition == yMax - 2 && platform->getPosition() <= xPosition && platform->getEnd() >= xPosition)
+        // If game terminated, we shouldn't do all this stuff
+        if(running)
         {
-            falling = false;
+            yPosition++;
 
-            if(platform->getColor() == color)
+            if(yPosition == yMax - 2 && platform->getPosition() <= xPosition && platform->getEnd() >= xPosition)
             {
-                points += 5;
-            }
-            else
-            {
-                if(points != 0)
+                falling = false;
+
+                if(platform->getColor() == color)
                 {
-                    points--;
+                    points += 5;
+                }
+                else
+                {
+                    if(points != 0)
+                    {
+                        points--;
+                    }
+
+                    freeze();
                 }
 
-                Brick::freeze();
+                break;
             }
 
-            break;
+            usleep(250000 - 10000 * descentRate);
         }
-
-        usleep(250000 - 10000 * descentRate);
     }
 
-    // Reset
-    yPosition = -1;
-    falling = false;
-    randomColor();
+    if(running)
+    {
+        // Reset
+        yPosition = -1;
+        falling = false;
+        randomColor();
+    }
 }
 
 std::thread Brick::fallThread()
