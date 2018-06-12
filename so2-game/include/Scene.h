@@ -16,12 +16,14 @@ class Scene
         static void init(int xRes, int yRes);
         static int getPoints();
         static bool isFreezed();
+        static void terminateAll();
     protected:
         static int xMax;
         static int yMax;
         static int points;
         static bool initialized;
         static bool freezed;
+        static bool running;
         static void freeze();
     private:
 };

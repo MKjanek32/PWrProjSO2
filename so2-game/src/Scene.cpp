@@ -6,6 +6,7 @@ int Scene::yMax;
 int Scene::points = 0;
 bool Scene::initialized = false;
 bool Scene::freezed = false;
+bool Scene::running = false;
 std::mutex Scene::ncursesMutex;
 std::mutex Scene::freezeMutex;
 std::condition_variable Scene::freezeCondition;
@@ -24,6 +25,7 @@ void Scene::init(int xRes, int yRes)
 {
     xMax = xRes;
     yMax = yRes;
+    running = true;
     initialized = true;
 }
 
@@ -44,4 +46,9 @@ void Scene::freeze()
     sleep(10);
     freezed = false;
     freezeCondition.notify_all();
+}
+
+void Scene::terminateAll()
+{
+    running = false;
 }

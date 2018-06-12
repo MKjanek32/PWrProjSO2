@@ -23,7 +23,6 @@ class Platform : public Scene
         int position;
         int points;
         int color;
-        bool running;
         void moveKey();
         void colorChange();
 };

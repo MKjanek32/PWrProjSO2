@@ -144,8 +144,8 @@ int main(int argc, char *argv[])
         usleep(100000 * randTime);
     }
 
-    // Stop platform threads
-    platform.terminateThreads();
+    // Stop scene objects threads
+    Scene::terminateAll();
     platformMover.join();
     platformColorChanger.join();
 

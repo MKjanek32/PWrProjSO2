@@ -52,8 +52,6 @@ void Platform::moveKey()
 
     int key;
 
-    running = true;
-
     while(running)
     {
         ncursesMutex.lock();
@@ -98,8 +96,6 @@ std::thread Platform::moveKeyThread()
 
 void Platform::colorChange()
 {
-    running = true;
-
     while(running)
     {
         // Freeze game
