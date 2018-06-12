@@ -95,6 +95,8 @@ void Brick::fall()
 
                 Brick::freeze();
             }
+
+            break;
         }
 
         usleep(250000 - 10000 * descentRate);
